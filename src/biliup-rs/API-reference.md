@@ -1,0 +1,40 @@
+# API调用
+本项目使用 Rust , 可以作为 lib 被调用
+### Rust
+```rust
+Studio::builder()
+    .desc("desc")
+    .dtime("dtime")
+    .copyright("copyright")
+    .cover("cover")
+    .dynamic("dynamic")
+    .source("source")
+    .tag("tag")
+    .tid("tid")
+    .title("title")
+    .videos("videos")
+    .build()
+    .submit(&Client::new().login_by_cookies("file").await?);
+```
+### Http
+
+可以通过[biliup-http](https://github.com/limitcool/biliup-http) 导出http-api接口给其他语言调用。
+
+### Python
+
+可以通过 [PyO3](https://github.com/PyO3/pyo3) 
+导出接口给 Python 调用。
+
+### Node.js
+可以通过 [napi-rs](https://github.com/napi-rs/napi-rs)
+导出接口给 Node.js 调用。
+
+### Golang  
+本项目的 Golang 实现
+* [luckycat0426/biliup-go](https://github.com/luckycat0426/biliup-go)
+* [XiaoMiku01/biliup-go](https://github.com/XiaoMiku01/biliup-go)  
+已实现**命令行**和**go第三方包**两种调用方式  
+
+___
+如果你有非Rust语言调用的需求，可以提一个issue
+
