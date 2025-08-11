@@ -1,6 +1,6 @@
 # 申请Netlify
 ## 正式开始
-
+# [Netlify](https://www.netlify.com)
 确保你有一个开源项目，并且已经托管在了Netlify，Github的也有你网站的链接
 ![](./2025-08-09-12-30-32-image.png)
 
