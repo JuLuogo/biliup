@@ -135,3 +135,35 @@ def fmt_title_and_desc(data):
 def custom_fmtstr(string, date, title, streamer, url):
     return time.strftime(string.encode('unicode-escape').decode(), date).encode().decode("unicode-escape").format(
         title=title, streamer=streamer, url=url)
+
+
+class UploaderBase:
+    def __init__(self, config):
+        self.msg_handler = []
+        self.push_config = config.get('push_notification', {})
+
+    async def _push_notification(self, result):
+        if self.push_config.get('webhook_url'):
+            from biliup.common.util import async_http
+            try:
+                await async_http.post(
+                    self.push_config['webhook_url'],
+                    json={
+                        'status': 'success',
+                        'filename': result['filename'],
+                        'url': result['url'],
+                        'timestamp': datetime.now().isoformat()
+                    }
+                )
+                logger.info(f"推送成功: {result['filename']}")
+            except Exception as e:
+                logger.error(f"推送失败: {str(e)}")
+
+    async def after_upload(self, result):
+        await self._push_notification(result)
+
+class BiliWebUp(UploaderBase):
+    async def upload(self, file_list):
+        result = await super().upload(file_list)
+        await self.after_upload(result)
+        return result

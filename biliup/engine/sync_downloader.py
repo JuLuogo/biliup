@@ -2,9 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import os
-import queue
-import threading
 import subprocess
 import time
 from urllib.parse import urlparse
@@ -168,7 +165,6 @@ class SyncDownloader:
           5) 进入下一段，如此往复。
         - 若中途发现 streamlink 无数据（EOF）则跳出循环。
         """
-
         file_index = 1
         retry_count = 0
         while True:
@@ -177,15 +173,11 @@ class SyncDownloader:
             if retry_count >= 5:
                 logger.info("这个直播流已经失效，停止下载器")
                 return
-
             output_filename = f"{self.output_prefix}{file_index:03d}.mkv"
-            # print(f"\n[run] ========== 准备录制第 {file_index} 段：{output_filename} ==========")
-            # logging.info(f"\n[run] == 当前下载流地址：{self.stream_url} ==")
             logger.info(f"\n[run] == 准备录制第 {file_index} 段：{output_filename} ==")
             output_filename = "-"
             is_hls = '.m3u8' in urlparse(self.stream_url).path
             if not is_hls:
-                # print("[run] 输入源不是 HLS 地址，将直接使用 ffmpeg 进行录制。", self.stream_url)
                 logger.info("[run] 输入源不是 HLS 地址，将直接使用 ffmpeg 进行录制。")
                 ffmpeg_cmd = self.build_ffmpeg_cmd(self.stream_url, output_filename,
                                                    self.headers, self.segment_duration)
@@ -194,7 +186,6 @@ class SyncDownloader:
                     time.sleep(1)
                     continue
             else:
-                # print("[run] 输入源是 HLS 地址，将使用 streamlink + ffmpeg 进行录制。")
                 logger.info("[run] 输入源是 HLS 地址，将使用 streamlink + ffmpeg 进行录制。")
                 if self.headers:
                     headers = []
@@ -210,16 +201,12 @@ class SyncDownloader:
                     '-O'
                 ]
                 logger.info(f"[run] streamlink_cmd: {streamlink_cmd}")
-                # output_filename = "-"
                 ffmpeg_cmd = self.build_ffmpeg_cmd("pipe:0", output_filename, None, self.segment_duration)
                 if not self.run_streamlink_with_ffmpeg(streamlink_cmd, ffmpeg_cmd, output_filename):
                     retry_count += 1
                     time.sleep(1)
                     continue
-
-            # 6. 进入下一段
-            # if file_index != 1:
-            self.video_queue.put(None)  # 通知消费者线程本段录制结束
+            self.video_queue.put(None)
             file_index += 1
 
 
