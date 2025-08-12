@@ -1,3 +1,4 @@
+[贡献者行为准则 (Contributor Code of Conduct)](CODE_OF_CONDUCT.md)
 <div align="center">
   <img src="https://docs.biliup.rs/home.png" alt="description" width="300" height="300"/>
 </div>
